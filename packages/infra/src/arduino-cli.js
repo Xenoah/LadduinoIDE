@@ -8,6 +8,15 @@ export class ArduinoCliAdapter {
     this.binary = binary;
   }
 
+  async isAvailable() {
+    try {
+      await execFileAsync(this.binary, ['version']);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
   async compile({ fqbn, projectDir }) {
     const { stdout } = await execFileAsync(this.binary, ['compile', '--fqbn', fqbn, projectDir]);
     return { ok: true, stdout };

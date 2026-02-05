@@ -8,6 +8,25 @@
   </head>
   <body>
     <header class="topbar">
+      <div>
+        <h1>Ladduino IDE</h1>
+        <p>KVライクな操作感でラダー/ST/Arduino開発</p>
+      </div>
+      <div class="toolbar">
+        <button id="loadSelfHold" class="accent">自己保持サンプル</button>
+        <button id="compileLadder" class="primary">1スキャン実行</button>
+        <button id="simulateLadder">シーケンス実行</button>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <aside class="panel nav">
+        <h2>プロジェクト</h2>
+        <label>プロジェクト名<input id="projectName" value="demo" /></label>
+        <label>カテゴリ<select id="category"></select></label>
+        <label>ボード<select id="board"></select></label>
+        <label>スキャン周期(ms)<input id="scanCycle" type="number" value="10" /></label>
+        <label>シリアル速度<input id="baudrate" type="number" value="921600" /></label>
       <h1>Ladduino IDE</h1>
       <p>Arduino互換マイコン向けラダー開発環境</p>
     </header>
@@ -27,6 +46,101 @@
         <div class="chips">
           <label><input type="checkbox" id="langLadder" checked /> Ladder</label>
           <label><input type="checkbox" id="langSt" /> ST</label>
+          <label><input type="checkbox" id="langCpp" /> C++</label>
+        </div>
+
+        <button id="createProject" class="primary">プロジェクト生成</button>
+        <pre id="projectResult" class="result mini"></pre>
+      </aside>
+
+      <section class="panel editor">
+        <div class="editor-head">
+          <h2>ラダーエディタ</h2>
+          <div class="inline">
+            <label>Profile
+              <select id="profile">
+                <option value="generic">generic</option>
+                <option value="kv-like" selected>kv-like</option>
+              </select>
+            </label>
+            <label>Bit表記
+              <select id="notation">
+                <option value="kv-decimal-2" selected>KV</option>
+                <option value="mitsubishi-hex-1">三菱</option>
+              </select>
+            </label>
+            <label>変換先
+              <select id="toNotation">
+                <option value="mitsubishi-hex-1" selected>三菱</option>
+                <option value="kv-decimal-2">KV</option>
+              </select>
+            </label>
+          </div>
+        </div>
+
+        <h3>図形ラダー（NO/NC接点 + コイル）</h3>
+        <div class="row wrap">
+          <button id="addRung">行追加</button>
+          <label>選択行<select id="selectedRung"></select></label>
+          <label>接点デバイス<input id="contactDevice" value="R10015" /></label>
+          <label>接点タイプ<select id="contactType"><option value="NO">NO</option><option value="NC">NC</option></select></label>
+          <button id="addContact">接点追加</button>
+          <button id="removeContact">接点削除</button>
+        </div>
+        <div class="row wrap">
+          <label>コイル命令<select id="coilOp"><option>OUT</option><option>SET</option><option>RST</option><option>TON</option><option>CTU</option></select></label>
+          <label>コイルデバイス<input id="coilDevice" value="Y00000" /></label>
+          <label id="coilPresetWrap">プリセット<input id="coilPreset" type="number" value="5" /></label>
+          <button id="setCoil">コイル設定</button>
+          <button id="renderToText">図形→テキスト反映</button>
+        </div>
+
+        <div id="ladderCanvas" class="ladder-canvas"></div>
+
+        <h3>テキスト編集（互換）</h3>
+        <textarea id="ladderSource" rows="8">LD R10015
+OUT MR28009
+LDN R10015
+OUT MR28010</textarea>
+
+        <h3>ラダー一覧（行表示）</h3>
+        <div id="ladderPreview" class="ladder-preview"></div>
+
+        <div class="row wrap">
+          <label>入力ビット初期値(JSON)<input id="initialBits" value='{"R:1615":true}' /></label>
+          <label>入力シーケンス(JSON配列)<input id="inputSequence" value='[{"X:0":true,"X:1":false},{"X:0":false,"X:1":false},{"X:0":false,"X:1":true}]' /></label>
+        </div>
+
+        <pre id="ladderResult" class="result"></pre>
+      </section>
+
+      <aside class="panel right">
+        <h2>オンライン / デバイス</h2>
+        <div class="row wrap">
+          <button data-cmd="RUN" class="accent">RUN</button>
+          <button data-cmd="STOP">STOP</button>
+          <button data-cmd="FORCE_SET">FORCE_SET</button>
+          <button data-cmd="FORCE_CLR">FORCE_CLR</button>
+          <button data-cmd="FORCE_CLEAR_ALL">FORCE_CLEAR_ALL</button>
+        </div>
+        <pre id="monitorResult" class="result mini"></pre>
+
+        
+        <h3>Arduinoコード生成/コンパイル</h3>
+        <div class="row wrap">
+          <button id="generateArduino">Arduinoコード生成</button>
+          <button id="compileArduino" class="primary">Arduinoコンパイル</button>
+        </div>
+        <pre id="arduinoResult" class="result mini"></pre>
+
+        <h3>デバイス解析 / 変換</h3>
+        <label>入力デバイス<input id="deviceInput" value="R10015" /></label>
+        <div class="row">
+          <button id="parseDevice">解析</button>
+          <button id="convertDevice">変換</button>
+        </div>
+        <pre id="deviceResult" class="result mini"></pre>
+      </aside>
           <label><input type="checkbox" id="langCpp" /> Custom Arduino C++</label>
         </div>
 

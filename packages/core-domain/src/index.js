@@ -7,3 +7,4 @@ export * from './ir/ir-model.js';
 export * from './ir/ladder-parser.js';
 export * from './ir/st-parser.js';
 export * from './validation/validator.js';
+export * from './ir/ladder-simulator.js';

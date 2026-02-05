@@ -24,6 +24,14 @@ npm run build
 
 ## 主な確認ポイント
 - 新規プロジェクト生成（JSONプレビュー）
+- ラダーエディタで1スキャン実行（LD/LDN/OUT/SET/RST）
+- デバイス解析/表記変換（KV/三菱）
+- RUN/STOP/FORCEのオンライン模擬
+
+## サンプル
+- `examples/self-hold.ladder`: 自己保持回路（SET/RST）
+
+- 右ペインの「Arduinoコード生成/コンパイル」で、ラダーからArduinoスケッチ生成とコンパイルを実行
 - デバイス解析/表記変換（KV/三菱）
 - RUN/STOP/FORCEのオンライン模擬
 ## 補足

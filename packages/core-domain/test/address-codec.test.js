@@ -8,6 +8,8 @@ import {
   bitIndexToRef,
   parseStSubset,
   parseSimpleLadder,
+  executeLadder,
+  executeLadderScans,
   validateNoDuplicateAssignments,
   parseProjectConfig
 } from '../src/index.js';
@@ -71,4 +73,34 @@ test('project config parser', () => {
   const conf = parseProjectConfig({ name: 'demo', languages: { ladder: true } });
   assert.equal(conf.scanCycleMs, 10);
   assert.equal(conf.serialBaudrate, 921600);
+});
+
+
+test('Ladderシミュレータ 1スキャン実行', () => {
+  const result = executeLadder(['LD R10015', 'OUT MR28009', 'LDN R10015', 'OUT MR28010'], kvConfig, { 'R:1615': true });
+  assert.equal(result.bits['MR:4489'], true);
+  assert.equal(result.bits['MR:4490'], false);
+});
+
+
+test('自己保持回路シミュレーション', () => {
+  const genericKvConfig = {
+    profile: 'generic',
+    bitContactNotation: 'kv-decimal-2',
+    allowContactOmission: true,
+    bitDeviceUpperBound: 50000,
+    wordDeviceUpperBound: 4096
+  };
+
+  const lines = ['LD X00000', 'SET Y00000', 'LD X00001', 'RST Y00000'];
+  const seq = [
+    { 'X:0': true, 'X:1': false },
+    { 'X:0': false, 'X:1': false },
+    { 'X:0': false, 'X:1': true }
+  ];
+  const result = executeLadderScans(lines, genericKvConfig, seq, { 'Y:0': false });
+
+  assert.equal(result.history[0].bits['Y:0'], true);
+  assert.equal(result.history[1].bits['Y:0'], true);
+  assert.equal(result.history[2].bits['Y:0'], false);
 });

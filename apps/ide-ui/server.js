@@ -1,4 +1,12 @@
 import { createServer } from 'node:http';
+import { readFile, writeFile, mkdir } from 'node:fs/promises';
+import { extname, join, resolve } from 'node:path';
+import { tmpdir } from 'node:os';
+
+import { createNewProject, generateArduinoSketch } from '../../packages/app-usecases/src/index.js';
+import { parseDeviceRef, convertBitNotation, executeLadder, executeLadderScans } from '../../packages/core-domain/src/index.js';
+import { InMemorySerialTransport } from '../../packages/infra/src/serial-transport.js';
+import { ArduinoCliAdapter } from '../../packages/infra/src/arduino-cli.js';
 import { readFile } from 'node:fs/promises';
 import { extname, join, resolve } from 'node:path';
 
@@ -9,6 +17,7 @@ import { InMemorySerialTransport } from '../../packages/infra/src/serial-transpo
 const PORT = Number(process.env.PORT ?? 4173);
 const PUBLIC_DIR = resolve('apps/ide-ui/public');
 const transport = new InMemorySerialTransport();
+const arduinoCli = new ArduinoCliAdapter();
 
 const boardProfiles = {
   'board-avr-uno': JSON.parse(await readFile(resolve('plugins/board-avr-uno/profile.json'), 'utf8')),
@@ -98,6 +107,73 @@ const server = createServer(async (req, res) => {
       const body = await parseJson(req);
       const value = convertBitNotation(body.input, body.config, body.toNotation);
       return json(res, 200, { value });
+    }
+
+    if (req.method === 'POST' && url.pathname === '/api/ladder/compile') {
+      const body = await parseJson(req);
+      const lines = String(body.source ?? '').split('\n');
+      const result = executeLadder(lines, body.config, body.initialBits ?? {});
+      return json(res, 200, {
+        instructionCount: result.instructions.length,
+        instructions: result.instructions,
+        bits: result.bits,
+        acc: result.acc
+      });
+    }
+
+    if (req.method === 'POST' && url.pathname === '/api/ladder/simulate') {
+      const body = await parseJson(req);
+      const lines = String(body.source ?? '').split('\n');
+      const sequence = Array.isArray(body.inputSequence) ? body.inputSequence : [];
+      const result = executeLadderScans(lines, body.config, sequence, body.initialBits ?? {});
+      return json(res, 200, result);
+    }
+
+    if (req.method === 'POST' && url.pathname === '/api/arduino/generate') {
+      const body = await parseJson(req);
+      const sketch = generateArduinoSketch({
+        source: body.source,
+        config: body.config,
+        scanCycleMs: body.scanCycleMs ?? 10
+      });
+      return json(res, 200, { ok: true, sketch });
+    }
+
+    if (req.method === 'POST' && url.pathname === '/api/arduino/compile') {
+      const body = await parseJson(req);
+      const board = boardProfiles[body.boardId] ?? boardProfiles['board-avr-uno'];
+      const sketch = generateArduinoSketch({
+        source: body.source,
+        config: body.config,
+        scanCycleMs: body.scanCycleMs ?? 10
+      });
+
+      const available = await arduinoCli.isAvailable();
+      if (!available) {
+        return json(res, 200, {
+          ok: false,
+          compiled: false,
+          warning: 'arduino-cli が見つかりません。インストール後に再実行してください。',
+          fqbn: board.fqbn,
+          sketch
+        });
+      }
+
+      const baseDir = resolve(tmpdir(), 'ladduino-build', `${Date.now()}`);
+      const sketchDir = join(baseDir, 'ladduino_gen');
+      await mkdir(sketchDir, { recursive: true });
+      const sketchPath = join(sketchDir, 'ladduino_gen.ino');
+      await writeFile(sketchPath, sketch, 'utf8');
+
+      const compileResult = await arduinoCli.compile({ fqbn: board.fqbn, projectDir: sketchDir });
+      return json(res, 200, {
+        ok: true,
+        compiled: true,
+        fqbn: board.fqbn,
+        projectDir: sketchDir,
+        stdout: compileResult.stdout,
+        sketch
+      });
     }
 
     if (req.method === 'POST' && url.pathname === '/api/monitor') {

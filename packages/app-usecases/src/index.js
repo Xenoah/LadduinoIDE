@@ -29,3 +29,5 @@ export async function uploadProject({ arduinoCli, fqbn, projectDir, port }) {
 export async function monitorPoll({ transport, request }) {
   return transport.request(request);
 }
+
+export * from './arduino-codegen.js';

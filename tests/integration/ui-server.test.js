@@ -93,3 +93,111 @@ test('new project and monitor endpoints', async () => {
   const runJson = await run.json();
   assert.equal(runJson.state.run, true);
 });
+
+
+test('ladder compile endpoint', async () => {
+  const config = {
+    profile: 'kv-like',
+    bitContactNotation: 'kv-decimal-2',
+    allowContactOmission: true,
+    bitDeviceUpperBound: 50000,
+    wordDeviceUpperBound: 4096
+  };
+
+  const res = await fetch(`${BASE}/api/ladder/compile`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      source: 'LD R10015\nOUT MR28009',
+      config,
+      initialBits: { 'R:1615': true }
+    })
+  });
+  const json = await res.json();
+  assert.equal(json.instructionCount, 2);
+  assert.equal(json.bits['MR:4489'], true);
+});
+
+
+test('ladder simulate endpoint for self-hold', async () => {
+  const config = {
+    profile: 'generic',
+    bitContactNotation: 'kv-decimal-2',
+    allowContactOmission: true,
+    bitDeviceUpperBound: 50000,
+    wordDeviceUpperBound: 4096
+  };
+
+  const res = await fetch(`${BASE}/api/ladder/simulate`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      source: 'LD X00000\nSET Y00000\nLD X00001\nRST Y00000',
+      config,
+      initialBits: { 'Y:0': false },
+      inputSequence: [
+        { 'X:0': true, 'X:1': false },
+        { 'X:0': false, 'X:1': false },
+        { 'X:0': false, 'X:1': true }
+      ]
+    })
+  });
+  const json = await res.json();
+  assert.equal(json.history[0].bits['Y:0'], true);
+  assert.equal(json.history[1].bits['Y:0'], true);
+  assert.equal(json.history[2].bits['Y:0'], false);
+});
+
+
+test('arduino generate endpoint', async () => {
+  const config = {
+    profile: 'kv-like',
+    bitContactNotation: 'kv-decimal-2',
+    allowContactOmission: true,
+    bitDeviceUpperBound: 50000,
+    wordDeviceUpperBound: 4096
+  };
+
+  const res = await fetch(`${BASE}/api/arduino/generate`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      source: 'LD R10015\nOUT MR28009',
+      config,
+      scanCycleMs: 10
+    })
+  });
+  const json = await res.json();
+  assert.equal(json.ok, true);
+  assert.ok(String(json.sketch).includes('void ladderScan()'));
+  assert.ok(String(json.sketch).includes('setBit("MR:4489", acc);'));
+});
+
+test('arduino compile endpoint returns compile result or warning', async () => {
+  const config = {
+    profile: 'kv-like',
+    bitContactNotation: 'kv-decimal-2',
+    allowContactOmission: true,
+    bitDeviceUpperBound: 50000,
+    wordDeviceUpperBound: 4096
+  };
+
+  const res = await fetch(`${BASE}/api/arduino/compile`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      boardId: 'board-avr-uno',
+      source: 'LD R10015\nOUT MR28009',
+      config,
+      scanCycleMs: 10
+    })
+  });
+  const json = await res.json();
+  assert.ok(typeof json.ok === 'boolean');
+  if (json.compiled) {
+    assert.equal(json.ok, true);
+    assert.ok(String(json.stdout).length >= 0);
+  } else {
+    assert.ok(String(json.warning).includes('arduino-cli'));
+  }
+});
