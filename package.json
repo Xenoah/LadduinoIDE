@@ -7,5 +7,13 @@
     "test": "node --test packages/core-domain/test/**/*.test.js",
     "lint": "node --check packages/core-domain/src/index.js packages/core-domain/src/devices/address-codec.js packages/core-domain/src/devices/numeric-literal.js packages/core-domain/src/config/project-config.js packages/core-domain/src/ir/ladder-parser.js packages/core-domain/src/ir/st-parser.js packages/core-domain/src/validation/validator.js packages/app-usecases/src/index.js packages/infra/src/arduino-cli.js packages/infra/src/serial-transport.js apps/ide-ui/src/wizard-model.js",
     "build": "node -e \"console.log('Build placeholder: JS modules validated')\""
+  "version": "0.1.0",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run -w @ladduino/core-domain build",
+    "test": "npm run -w @ladduino/core-domain test",
+    "lint": "npm run -w @ladduino/core-domain lint"
   }
 }
