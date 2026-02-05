@@ -1,5 +1,7 @@
 # 開発ガイド
 
+## 前提
+- Node.js 22+
 ## セットアップ
 ```bash
 npm install
@@ -12,5 +14,8 @@ npm run test
 npm run build
 ```
 
+## 補足
+- 現在は依存ゼロ（標準Node機能のみ）でテスト可能。
+- 実機書き込みは `arduino-cli` が別途必要。
 ## 対象
 現在は `packages/core-domain` のユニットテストを中心に整備。

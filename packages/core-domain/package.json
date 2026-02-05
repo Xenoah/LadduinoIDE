@@ -1,5 +1,12 @@
 {
   "name": "@ladduino/core-domain",
+  "version": "0.2.0",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "node --test test/**/*.test.js",
+    "lint": "node --check src/**/*.js test/**/*.js",
+    "build": "node -e \"console.log('no build step for js package')\""
   "version": "0.1.0",
   "type": "module",
   "main": "dist/index.js",

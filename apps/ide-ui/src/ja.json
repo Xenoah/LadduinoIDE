@@ -1,0 +1,15 @@
+{
+  "newProject": "新規プロジェクト",
+  "category": "カテゴリ",
+  "board": "ボード",
+  "languages": "有効化言語",
+  "ioAssignment": "I/O割当",
+  "summary": "まとめ",
+  "build": "ビルド",
+  "upload": "書き込み",
+  "connect": "オンライン接続",
+  "monitor": "デバイスモニタ",
+  "force": "強制ON/OFF",
+  "run": "RUN",
+  "stop": "STOP"
+}
