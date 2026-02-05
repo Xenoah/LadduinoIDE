@@ -67,3 +67,11 @@ npm run build
 3. Serial v1 CRC/length実装と相互接続テスト。
 4. ラダー命令拡張（DIFU/比較/算術/転送）。
 5. 実機サンプル（AVR/ESP32/M5/MCP23017）。
+
+## 追加更新（納品向け）
+- `apps/ide-ui/server.js` を追加し、UI/APIが実際に起動可能になった。
+- UIをモダンなカードレイアウトへ更新し、以下をワンクリック操作可能にした。
+  - 新規プロジェクト生成
+  - デバイス解析/表記変換
+  - オンライン模擬モニタ（RUN/STOP/FORCE）
+- `tests/integration/ui-server.test.js` を追加し、エンドポイントの実動テストを追加した。
