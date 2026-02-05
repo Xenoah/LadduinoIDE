@@ -1,0 +1,13 @@
+{
+  "name": "ladduino-ide",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run -w @ladduino/core-domain build",
+    "test": "npm run -w @ladduino/core-domain test",
+    "lint": "npm run -w @ladduino/core-domain lint"
+  }
+}
