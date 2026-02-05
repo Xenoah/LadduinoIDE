@@ -273,3 +273,4 @@ syncCoilPresetVisibility();
 renderRungSelector();
 renderLadderCanvas();
 refreshLadderPreview();
+loadMeta();

@@ -27,6 +27,20 @@
         <label>ボード<select id="board"></select></label>
         <label>スキャン周期(ms)<input id="scanCycle" type="number" value="10" /></label>
         <label>シリアル速度<input id="baudrate" type="number" value="921600" /></label>
+      <h1>Ladduino IDE</h1>
+      <p>Arduino互換マイコン向けラダー開発環境</p>
+    </header>
+
+    <main class="layout">
+      <section class="card">
+        <h2>新規プロジェクト</h2>
+        <div class="grid">
+          <label>プロジェクト名<input id="projectName" value="demo" /></label>
+          <label>カテゴリ<select id="category"></select></label>
+          <label>ボード<select id="board"></select></label>
+          <label>スキャン周期(ms)<input id="scanCycle" type="number" value="10" /></label>
+          <label>シリアル速度<input id="baudrate" type="number" value="921600" /></label>
+        </div>
 
         <h3>有効化言語</h3>
         <div class="chips">
@@ -127,6 +141,54 @@ OUT MR28010</textarea>
         </div>
         <pre id="deviceResult" class="result mini"></pre>
       </aside>
+          <label><input type="checkbox" id="langCpp" /> Custom Arduino C++</label>
+        </div>
+
+        <button id="createProject" class="primary">プロジェクト生成</button>
+        <pre id="projectResult" class="result"></pre>
+      </section>
+
+      <section class="card">
+        <h2>デバイス表記変換 / 解析</h2>
+        <div class="grid">
+          <label>入力デバイス<input id="deviceInput" value="R10015" /></label>
+          <label>Profile
+            <select id="profile">
+              <option value="generic">generic</option>
+              <option value="kv-like" selected>kv-like</option>
+            </select>
+          </label>
+          <label>Bit表記
+            <select id="notation">
+              <option value="kv-decimal-2" selected>KV(10進2桁)</option>
+              <option value="mitsubishi-hex-1">三菱(16進1桁)</option>
+            </select>
+          </label>
+          <label>変換先
+            <select id="toNotation">
+              <option value="mitsubishi-hex-1" selected>三菱(16進1桁)</option>
+              <option value="kv-decimal-2">KV(10進2桁)</option>
+            </select>
+          </label>
+        </div>
+        <div class="row">
+          <button id="parseDevice">解析</button>
+          <button id="convertDevice">変換</button>
+        </div>
+        <pre id="deviceResult" class="result"></pre>
+      </section>
+
+      <section class="card">
+        <h2>オンラインモニタ (Serial v1 模擬)</h2>
+        <div class="row wrap">
+          <button data-cmd="RUN" class="accent">RUN</button>
+          <button data-cmd="STOP">STOP</button>
+          <button data-cmd="FORCE_SET">FORCE_SET R10015</button>
+          <button data-cmd="FORCE_CLR">FORCE_CLR R10015</button>
+          <button data-cmd="FORCE_CLEAR_ALL">FORCE_CLEAR_ALL</button>
+        </div>
+        <pre id="monitorResult" class="result"></pre>
+      </section>
     </main>
 
     <script type="module" src="/main.js"></script>

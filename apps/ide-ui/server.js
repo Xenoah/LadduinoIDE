@@ -7,6 +7,12 @@ import { createNewProject, generateArduinoSketch } from '../../packages/app-usec
 import { parseDeviceRef, convertBitNotation, executeLadder, executeLadderScans } from '../../packages/core-domain/src/index.js';
 import { InMemorySerialTransport } from '../../packages/infra/src/serial-transport.js';
 import { ArduinoCliAdapter } from '../../packages/infra/src/arduino-cli.js';
+import { readFile } from 'node:fs/promises';
+import { extname, join, resolve } from 'node:path';
+
+import { createNewProject } from '../../packages/app-usecases/src/index.js';
+import { parseDeviceRef, convertBitNotation } from '../../packages/core-domain/src/index.js';
+import { InMemorySerialTransport } from '../../packages/infra/src/serial-transport.js';
 
 const PORT = Number(process.env.PORT ?? 4173);
 const PUBLIC_DIR = resolve('apps/ide-ui/public');
