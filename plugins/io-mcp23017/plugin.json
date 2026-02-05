@@ -1,0 +1,17 @@
+{
+  "id": "io-mcp23017",
+  "name": "MCP23017",
+  "schema": {
+    "i2cBus": ["Wire", "Wire1"],
+    "addressRange": [32, 39],
+    "pinCount": 16,
+    "direction": ["input", "output"],
+    "pullup": [true, false],
+    "polarityInversion": [true, false]
+  },
+  "validationRules": [
+    "duplicate-assignment",
+    "reserved-pin",
+    "address-range"
+  ]
+}

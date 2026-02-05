@@ -1,0 +1,12 @@
+{
+  "id": "board-m5-core2",
+  "category": "M5",
+  "fqbn": "m5stack:esp32:m5stack-core2",
+  "recommendedScanCycleMs": 10,
+  "reservedGpio": [21, 22, 25, 32, 33],
+  "requiredLibraries": ["M5Unified"],
+  "tasks": {
+    "ladder": { "core": 1, "priority": 4, "stack": 8192 },
+    "comm": { "core": 0, "priority": 3, "stack": 6144 }
+  }
+}
