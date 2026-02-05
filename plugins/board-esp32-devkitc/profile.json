@@ -1,0 +1,11 @@
+{
+  "id": "board-esp32-devkitc",
+  "category": "ESP32",
+  "fqbn": "esp32:esp32:esp32",
+  "recommendedScanCycleMs": 10,
+  "tasks": {
+    "ladder": { "core": 1, "priority": 4, "stack": 8192 },
+    "comm": { "core": 0, "priority": 3, "stack": 6144 }
+  },
+  "requiredLibraries": []
+}

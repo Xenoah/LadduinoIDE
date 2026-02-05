@@ -1,0 +1,8 @@
+{
+  "id": "board-avr-uno",
+  "category": "AVR",
+  "fqbn": "arduino:avr:uno",
+  "recommendedScanCycleMs": 10,
+  "reservedGpio": [0, 1],
+  "requiredLibraries": []
+}
